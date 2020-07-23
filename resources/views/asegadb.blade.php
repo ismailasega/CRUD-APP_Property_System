@@ -7,15 +7,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     <!-- Styles -->
-    @if(isset(Auth::user()->username))
-            <div class ="alert alert-danger success-block">
-                <strong> Welcome {{Auth::user()->username}}</strong>
-                <br/>
-                <a href="{{ url('/login/logout') }}">Logout</a>
-            </div>
-        else
-            <script>window.location = "/login";</script>
-        @endif
+    
         <style>
             * {
                 box-sizing: border-box;
@@ -36,7 +28,7 @@
                 .navtop div {
                 display: flex;
                 margin: 0 auto;
-                width: 1000px;
+                width: 1400px;
                 height: 100%;
                 }
                 .navtop div h1, .navtop div a {
@@ -67,7 +59,7 @@
                 background-color: #f3f4f7;
                 }
                 .content {
-                width: 1000px;
+                width: 1400px;
                 margin: 0 auto;
                 }
                 .content h2 {
@@ -96,7 +88,7 @@
                 margin: 0 0 10px 0;
                 }
         </style>
-       
+
     </head>
 	<body class="loggedin">
 		<nav class="navtop">
@@ -105,10 +97,9 @@
 				<a href="{{ url('/login/logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
 			</div>
 		</nav>
-		<div class="content">
+        <div class="content">
 			<h2>Property System </h2>
-            <p>Welcome | Role :</p>
-          
+            <p>Welcome | Role : {{Auth::user()->username}}</p>
             <div class="card">
                 <div class=card-body>
                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#fetchdata">
@@ -124,7 +115,7 @@
                 <table id= "dbdatatable" class="table table-bordered">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">Id</th>
+                                <th scope="col">ID</th>
                                 <th scope="col">County</th>
                                 <th scope="col">Country</th>
                                 <th scope="col">Town</th>
@@ -142,6 +133,8 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">PropertyType</th>
                                 <th scope="col">ForSale_ForRent</th>
+                                <th scope="col">created_at</th>
+                                <th scope="col">updated_at</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Delete</th>
                             </tr>
@@ -149,7 +142,7 @@
                         <tbody>
                             @foreach ($PropertyData as $row)
                             <tr>
-                                <td>{{ $row->id }} </td>
+                                <td>{{ $row->Id }}</td>
                                 <td>{{ $row->County }}</td>
                                 <td>{{ $row->Country }}</td>
                                 <td>{{ $row->Town }}</td>
@@ -157,7 +150,7 @@
                                 <td>{{ $row->Description }}</td>
                                 <td>{{ $row->FullDetailsURL }}</td>
                                 <td>{{ $row->DisplayableAddress }}</td>
-                                <td>{{ $row->Image }}</td>
+                                <td><img src="{{ URL::asset('img/' . $row->Image) }}" height="50" width="50"/></td>
                                 <td>{{ $row->ImageURL }}</td>
                                 <td>{{ $row->ThumbnailURL }}</td>
                                 <td>{{ $row->Latitude }}</td>
@@ -167,6 +160,8 @@
                                 <td>{{ $row->Price }}</td>
                                 <td>{{ $row->PropertyType }}</td>
                                 <td>{{ $row->ForSale_ForRent }}</td>
+                                <td>{{ $row->created_at }}</td>
+                                <td>{{ $row->updated_at }}</td>
                                 <td>
                                     <button type="button" class="btn btn-success editbtn">Edit</button>
                                 </td>
@@ -177,8 +172,7 @@
                             @endforeach
                         </tbody>
                     </table>
-
-            </div> 
+                </div> 
 
         
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -196,22 +190,24 @@ $(document).ready(function() {
     } );
 } );
 </script>
+
 <script>
 $(document).ready(function() {
     $('#adddata').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: '/PropertySystem',
+            url: '/login/PropertySystem',
             data: $('#adddata').serialize(),
             success: function (response){
                 console.log(response);
                 $('#propertyData').modal('hide')
-                alert("Propert Added");
+                alert("Property Added");
+                window.location='/login/PropertySystem'
             },
             error:function(error){
                 console.log(error);
-                //alert("Property Not Added");
+                alert("Property Not Added");
             }
 
         });
@@ -231,27 +227,30 @@ $(document).ready(function (){
 
         console.log(data);
 
-        $('#id_delete').val(data[0]);
+        $('#delete_id').val(data[0]);
 
     });
-});
+    $('#deletedata').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#delete_id').val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/login/PropertySystem/'+id,
+            data: $('#deletedata').serialize(),
+            success: function (response){
+                console.log(response);
+                $('#deleteproperty').modal('hide')
+                alert("Property Deleted!");
+                window.location='/login/PropertySystem'
+            },
+            error:function(error){
+                console.log(error);
+                alert("Property Not Deleted!");
+            }
 
-</script>
-<script>
-$(document).ready(function (){
-    $('.delbtn').on('click', function(){
-        $('#deleteproperty').modal('show');
-
-        $tr =$(this).closest('tr');
-        var data = $tr.children("td").map(function() {
-            return $(this).text()
-        }).get();
-
-        console.log(data);
-
-        $('#id_delete').val(data[0]);
-
-    });
+        });
+        
+    } );
 });
 
 </script>
@@ -268,7 +267,7 @@ $(document).ready(function (){
 
         console.log(data);
 
-        $('#id_update').val(data[0]);
+        $('#id').val(data[0]);
         $('#County').val(data[1]);
         $('#Country').val(data[2]);
         $('#Town').val(data[3]);
@@ -276,14 +275,33 @@ $(document).ready(function (){
         $('#Description').val(data[5]);
         $('#DisplayableAddress').val(data[7]);
         $('#Image').val(data[8]);
-        $('#Numberofbedrooms').val(data[13]);
-        $('#Numberofbathrooms').val(data[14]);
+        $('#NumberOfBedrooms').val(data[13]);
+        $('#NumberOfBathrooms').val(data[14]);
         $('#Price').val(data[15]);
         $('#PropertyType').val(data[16]);
-        $('#gridRadios1').val(data[17]);
-        
-
+        $('#ForSale_ForRent').val(data[17]);
     });
+    $('#edit_update').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#id').val();
+        $.ajax({
+            type: 'PUT',
+            url: 'login/PropertySystem/'+id,
+            data: $('#edit_update').serialize(),
+            success: function (response){
+                console.log(response);
+                $('#editproperty').modal('hide')
+                alert("Property Updated");
+                window.location='/login/PropertySystem'
+            },
+            error:function(error){
+                console.log(error);
+                alert("Property Not Updated");
+            }
+
+        });
+        
+    } );
 });
 
 </script>
@@ -303,7 +321,7 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form id= "adddata" action="/insert" method="POST">
+            <form id= "adddata" action="/insert" method="POST"> 
             {{ csrf_field() }}
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -340,7 +358,7 @@ $(document).ready(function() {
         <div class="form-row">
             <div class="form-group col-md-4">
             <label for="SelectNoofBedrooms">No. of bedrooms</label>
-            <select id="SelectNoofBedrooms" name="Noofbedrooms" type="text" class="form-control" required>
+            <select id="SelectNoofBedrooms" name="NumberOfBedrooms" class="form-control">
                 <option selected>Select...</option>
                 <option>1</option>
                 <option>2</option>
@@ -351,7 +369,7 @@ $(document).ready(function() {
             </div>
             <div class="form-group col-md-4">
             <label for="SelectNoofBathrooms">No. of bathrooms</label>
-            <select id="SelectNoofBathrooms" name="Noofbathrooms" class="form-control" required>
+            <select id="SelectNoofBathrooms" name="NumberOfBathrooms" class="form-control">
                 <option selected>Select...</option>
                 <option>1</option>
                 <option>2</option>
@@ -375,13 +393,13 @@ $(document).ready(function() {
                 <legend class="col-form-label col-sm-2 pt-0">For</legend>
                 <div class="col-sm-10">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="Rent" checked>
+                        <input class="form-check-input" type="radio" name="ForSale_ForRent" id="ForSale_ForRent1" value="Rent" checked>
                         <label class="form-check-label"  for="gridRadios1">
                             Rent
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="Sale">
+                        <input class="form-check-input" type="radio" name="ForSale_ForRent" id="ForSale_ForRent2" value="Sale">
                         <label class="form-check-label"  for="gridRadios1">
                             Sale
                         </label>
@@ -410,9 +428,11 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form action="updatedata.php" method="POST">
+            <form id="edit_update" >
             {{ csrf_field() }}
-                <input type="hidden" name="id_update" id="id_update">
+            {{method_field('PUT')}}
+
+                <input type="hidden" name="id" id="id">
         <div class="form-row">
             <div class="form-group col-md-6">
             <label for="inputCounty">County</label>
@@ -448,7 +468,7 @@ $(document).ready(function() {
         <div class="form-row">
             <div class="form-group col-md-4">
             <label for="SelectNo.ofBedrooms">No. of bedrooms</label>
-            <select class="form-control" name="Noofofbedrooms" id="Numberofbedrooms">
+            <select class="form-control" name="NumberOfBedrooms" id="NumberOfBedrooms">
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -458,7 +478,7 @@ $(document).ready(function() {
             </div>
             <div class="form-group col-md-4">
                 <label for="SelectNo.ofBathrooms">No. of bathrooms</label>
-                <select name="Noofbathrooms" class="form-control" id="Numberofbathrooms">
+                <select name="NumberOfBathrooms" class="form-control" id="NumberOfBathrooms">
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -481,13 +501,13 @@ $(document).ready(function() {
                 <legend class="col-form-label col-sm-2 pt-0">For</legend>
                 <div class="col-sm-10">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="Rent" checked>
+                        <input class="form-check-input" type="radio" name="ForSale_ForRent" id="ForSale_ForRent3" value="Rent" checked>
                         <label class="form-check-label"  for="gridRadios1">
                             Rent
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="Sale">
+                        <input class="form-check-input" type="radio" name="ForSale_ForRent" id="ForSale_ForRent4" value="Sale">
                         <label class="form-check-label"  for="gridRadios2">
                             Sale
                         </label>
@@ -515,16 +535,16 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form action="deletedata.php" method="POST">
+            <form id="deletedata">
             {{ csrf_field() }}
-                <input type="hidden" name="id_delete" id="id_delete">
-
+            {{method_field('delete')}}
+                <input type="hidden" name="id" id="delete_id">
                 <h4> Do you wish to DELETE this Property?</h4>
  
-        <div class="modal-footer">
+            <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
             <button type="subimit" name="deletedata" class="btn btn-success">Proceed</button>
-        </div>
+            </div>
         </form>
       </div>
     </div>

@@ -12,26 +12,20 @@ class MYSQLAPIController extends Controller
     {
         
         $PropertyData = data::all();
-        return view('asegadb')->with('PropertyData', $PropertyData);
+        return view('asegadb', compact('PropertyData'));
     }
 
     function insert(Request $request){
         
         $PropertyData = new data;
-
      
-        $PropertyData->Country = $request->input('County'); 
+        $PropertyData->County = $request->input('County'); 
         $PropertyData->Country = $request->input('Country'); 
         $PropertyData->Town = $request->input('Town'); 
         $PropertyData->Postcode = $request->input('Postcode'); 
-        $PropertyData->Description = $request->input('Description'); 
-        $PropertyData->FullDetailsURL = $request->input('FullDetailsURL');
+        $PropertyData->Description = $request->input('Description');
         $PropertyData->DisplayableAddress = $request->input('DisplayableAddress'); 
-        $PropertyData->Image = $request->inpute('Image'); 
-        $PropertyData->ImageUR = $request->input('ImageURL'); 
-        $PropertyData->ThumbnailURL = $request->input('ThumbnailURL'); 
-        $PropertyData->Latitude = $request->input('Latitude'); 
-        $PropertyData->Longitude = $request->input('Longitude');
+        $PropertyData->Image = $request->input('Image');
         $PropertyData->NumberOfBedrooms = $request->input('NumberOfBedrooms');
         $PropertyData->NumberOfBathrooms = $request->input('NumberOfBathrooms'); 
         $PropertyData->Price = $request->input('Price'); 
@@ -39,18 +33,19 @@ class MYSQLAPIController extends Controller
         $PropertyData->ForSale_ForRent = $request->input('ForSale_ForRent');
 
         $PropertyData->save();
-        return redirect('/PropertySystem');
 
     }
     function update(Request $request, $id){
         
-        $PropertyData->Country = $request->input('County'); 
+        $PropertyData = data::find($id);
+
+        $PropertyData->County = $request->input('County'); 
         $PropertyData->Country = $request->input('Country'); 
         $PropertyData->Town = $request->input('Town'); 
         $PropertyData->Postcode = $request->input('Postcode'); 
-        $PropertyData->Description = $request->input('Description'); 
+        $PropertyData->Description = $request->input('Description');
         $PropertyData->DisplayableAddress = $request->input('DisplayableAddress'); 
-        $PropertyData->Image = $request->inpute('Image'); 
+        $PropertyData->Image = $request->input('Image'); 
         $PropertyData->NumberOfBedrooms = $request->input('NumberOfBedrooms');
         $PropertyData->NumberOfBathrooms = $request->input('NumberOfBathrooms'); 
         $PropertyData->Price = $request->input('Price'); 
@@ -58,6 +53,12 @@ class MYSQLAPIController extends Controller
         $PropertyData->ForSale_ForRent = $request->input('ForSale_ForRent');
 
         $PropertyData->save();
-        return redirect('/PropertySystem');
     }
+    function delete($id){
+        $PropertyData = data::find($id);
+        $PropertyData->delete();
+        return $PropertyData;
+    }
+
+
 }

@@ -17,25 +17,25 @@ class LoginController extends Controller
             'username' => 'required',
             'password' => 'required|min:5'
         ]);
-
-        $user_data = array(
-            'username' => $request->get('name'),
-            'password'=>$request->get('password')
+ 
+        $credentials = array(
+            'username' => $request->get('username'),
+            'password'=> $request->get('password')
         );
 
-        if(Auth::attempt($user_data)){
-            return redirect ('login/PropertySytem');
-            echo ($request->get());
+        if(Auth()->attempt($credentials)){
+            return redirect ('login/PropertySystem');
+            
         }
         else{
-            return back()->with('error', 'wrong credentials');
+            return back()->with('error', 'Invalid credentials');
             
         }
 
     }
-    function successlogin()
+    function PropertySystem()
     {
-        return view('PropertySytem');
+        return view('asegadb');
     }
     function logout(){
         Auth::logout();

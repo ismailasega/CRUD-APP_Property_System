@@ -15,23 +15,23 @@ class CreateDataTable extends Migration
     {
         Schema::create('data', function (Blueprint $table) {
             $table->increments('Id');
-            $table->string('County');
-            $table->string('Country');
-            $table->string('Town');
-            $table->integer('Postcode');
-            $table->text('Description');
-            $table->string('FullDetailsURL');
-            $table->string('DisplayableAddress');
-            $table->binary('Image');
-            $table->string('ImageURL');
-            $table->string('ThumbnailURL');
-            $table->integer('Latitude');
-            $table->integer('Longitude');
-            $table->integer('NumberOfBedrooms');
-            $table->integer('NumberOfBathrooms');
-            $table->integer('Price');
-            $table->string('PropertyType');
-            $table->string('ForSale_ForRent');
+            $table->string('County')->nullable();;
+            $table->string('Country')->nullable();;
+            $table->string('Town')->nullable();;
+            $table->integer('Postcode')->nullable();;
+            $table->text('Description')->nullable();;
+            $table->string('FullDetailsURL')->nullable();;
+            $table->string('DisplayableAddress')->nullable();;
+            $table->binary('Image')->nullable();;
+            $table->string('ImageURL')->nullable();;
+            $table->string('ThumbnailURL')->nullable();;
+            $table->integer('Latitude')->nullable();;
+            $table->integer('Longitude')->nullable();;
+            $table->integer('NumberOfBedrooms')->nullable();;
+            $table->integer('NumberOfBathrooms')->nullable();;
+            $table->integer('Price')->nullable();;
+            $table->string('PropertyType')->nullable();;
+            $table->string('ForSale_ForRent')->nullable();;
             $table->timestamps();
         });
     }

@@ -72,12 +72,12 @@
 		<div class="login">
          <h1>Login</h1>
          @if(isset(Auth::user()->username))
-               <script>window.location="/login/PropertySytem";</script>
+               <script>window.location="/login/PropertySystem";</script>
          @endif
          @if($message = Session::get('error'))
          <div class = "alert alert-danger alert-block">
-            <button type = "button" close ="close" data-dismiss="alert">x</button>
             <strong>{{ $message }}</strong>
+         </div>
          @endif
          @if(count($errors) > 0)
          <div class="alert alert-danger"> 
@@ -93,7 +93,7 @@
 				<label for="username">
 					<i class="fas fa-user"></i>
 				</label>
-				<input type="text" name="name" placeholder="Username" class="form-control" />
+				<input type="text" name="username" placeholder="Username" class="form-control" />
 				<label for="password">
 					<i class="fas fa-lock"></i>
 				</label>

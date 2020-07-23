@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/login', 'LoginController@index');
 Route::post('/login/checklogin', 'LoginController@checklogin');
-Route::get('/login/DataCMS', 'LoginController@successlogin');
+Route::get('/login/PropertySystem', 'LoginController@PropertySystem');
 Route::get('/login/logout', 'LoginController@logout');
-Route::get('/PropertySystem', 'MYSQLAPIController@index');
-Route::post('/PropertySystem', 'MYSQLAPIController@insert');
-
+Route::get('/login/PropertySystem', 'MYSQLAPIController@index');
+Route::post('/login/PropertySystem', 'MYSQLAPIController@insert');
+route::put('/login/PropertySystem/{id}', 'MYSQLAPIController@update');
+route::delete('/login/PropertySystem/{id}', 'MYSQLAPIController@delete');
 
