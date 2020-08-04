@@ -18,7 +18,7 @@ Route::post('/login/checklogin', 'LoginController@checklogin');
 Route::get('/login/PropertySystem', 'LoginController@PropertySystem');
 Route::get('/login/logout', 'LoginController@logout');
 Route::get('/login/PropertySystem', 'MYSQLAPIController@index');
-Route::post('/login/PropertySystem', 'MYSQLAPIController@insert');
+Route::post('/login/PropertySystem', 'MYSQLAPIController@store');
 route::put('/login/PropertySystem/{id}', 'MYSQLAPIController@update');
 route::delete('/login/PropertySystem/{id}', 'MYSQLAPIController@delete');
 

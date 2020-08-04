@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\data;
 
-
 class MYSQLAPIController extends Controller
 {
     function index()
@@ -15,17 +14,24 @@ class MYSQLAPIController extends Controller
         return view('asegadb', compact('PropertyData'));
     }
 
-    function insert(Request $request){
+    function store(Request $request){
         
-        $PropertyData = new data;
+        $PropertyData = new data();
      
         $PropertyData->County = $request->input('County'); 
         $PropertyData->Country = $request->input('Country'); 
         $PropertyData->Town = $request->input('Town'); 
         $PropertyData->Postcode = $request->input('Postcode'); 
         $PropertyData->Description = $request->input('Description');
-        $PropertyData->DisplayableAddress = $request->input('DisplayableAddress'); 
-        $PropertyData->Image = $request->input('Image');
+        $PropertyData->DisplayableAddress = $request->input('DisplayableAddress');
+        
+        if($request->hasFile('Image')){
+            $img = $request->file('Image');  
+            $imgname =time().'.'.$img->getClientOriginalExtension();
+            $path= storage_psth('app/public/uploads/'. $imgname);
+            Image::make($img)->resize(200, 200)->save($path);
+            $PropertyData->Image = $imgname;
+        }
         $PropertyData->NumberOfBedrooms = $request->input('NumberOfBedrooms');
         $PropertyData->NumberOfBathrooms = $request->input('NumberOfBathrooms'); 
         $PropertyData->Price = $request->input('Price'); 
@@ -35,9 +41,9 @@ class MYSQLAPIController extends Controller
         $PropertyData->save();
 
     }
-    function update(Request $request, $id){
+    function update(Request $request, $Id){
         
-        $PropertyData = data::find($id);
+        $PropertyData = data::find($Id);
 
         $PropertyData->County = $request->input('County'); 
         $PropertyData->Country = $request->input('Country'); 
@@ -45,7 +51,15 @@ class MYSQLAPIController extends Controller
         $PropertyData->Postcode = $request->input('Postcode'); 
         $PropertyData->Description = $request->input('Description');
         $PropertyData->DisplayableAddress = $request->input('DisplayableAddress'); 
-        $PropertyData->Image = $request->input('Image'); 
+
+        if($request->hasFile('Image')){
+            $img = $request->file('Image');  
+            $imgname =time().'.'.$img->getClientOriginalExtension();
+            $path= storage_psth('app/public/uploads/'. $imgname);
+            Image::make($img)->resize(200, 200)->save($path);
+            Storage::delete('uploads/' . $$PropertyData->Image);
+            $PropertyData->Image = $imgname;
+        }
         $PropertyData->NumberOfBedrooms = $request->input('NumberOfBedrooms');
         $PropertyData->NumberOfBathrooms = $request->input('NumberOfBathrooms'); 
         $PropertyData->Price = $request->input('Price'); 
@@ -54,10 +68,11 @@ class MYSQLAPIController extends Controller
 
         $PropertyData->save();
     }
+    
     function delete($id){
-        $PropertyData = data::find($id);
+        $PropertyData = data::findorfail($id);
         $PropertyData->delete();
-        return $PropertyData;
+        
     }
 
 

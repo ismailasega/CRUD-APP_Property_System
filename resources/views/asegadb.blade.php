@@ -150,7 +150,7 @@
                                 <td>{{ $row->Description }}</td>
                                 <td>{{ $row->FullDetailsURL }}</td>
                                 <td>{{ $row->DisplayableAddress }}</td>
-                                <td><img src="{{ URL::asset('img/' . $row->Image) }}" height="50" width="50"/></td>
+                                <td><img src="{{ asset('public'. $row->Image) }}" alt="Image"></td>
                                 <td>{{ $row->ImageURL }}</td>
                                 <td>{{ $row->ThumbnailURL }}</td>
                                 <td>{{ $row->Latitude }}</td>
@@ -219,16 +219,12 @@ $(document).ready(function() {
 $(document).ready(function (){
     $('.delbtn').on('click', function(){
         $('#deleteproperty').modal('show');
-
         $tr =$(this).closest('tr');
         var data = $tr.children("td").map(function() {
             return $(this).text()
         }).get();
-
         console.log(data);
-
         $('#delete_id').val(data[0]);
-
     });
     $('#deletedata').on('submit', function(e) {
         e.preventDefault();
@@ -247,27 +243,21 @@ $(document).ready(function (){
                 console.log(error);
                 alert("Property Not Deleted!");
             }
-
         });
         
     } );
 });
-
 </script>
 <script>
 $(document).ready(function (){
     $('.editbtn').on('click', function(){
         $('#editproperty').modal('show');
-
         $tr = $(this).closest('tr');
-
         var data = $tr.children("td").map(function() {
             return $(this).text()
         }).get();
-
         console.log(data);
-
-        $('#id').val(data[0]);
+        $('#update_id').val(data[0]);
         $('#County').val(data[1]);
         $('#Country').val(data[2]);
         $('#Town').val(data[3]);
@@ -281,13 +271,13 @@ $(document).ready(function (){
         $('#PropertyType').val(data[16]);
         $('#ForSale_ForRent').val(data[17]);
     });
-    $('#edit_update').on('submit', function(e) {
+    $('#updatedata').on('submit', function(e) {
         e.preventDefault();
-        var id = $('#id').val();
+        var id = $('#update_id').val();
         $.ajax({
             type: 'PUT',
-            url: 'login/PropertySystem/'+id,
-            data: $('#edit_update').serialize(),
+            url: '/login/PropertySystem/'+id,
+            data: $('#updatedata').serialize(),
             success: function (response){
                 console.log(response);
                 $('#editproperty').modal('hide')
@@ -298,12 +288,10 @@ $(document).ready(function (){
                 console.log(error);
                 alert("Property Not Updated");
             }
-
         });
         
     } );
 });
-
 </script>
 <script>
 $(document).ready(function() {
@@ -321,7 +309,7 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form id= "adddata" action="/insert" method="POST"> 
+            <form id= "adddata" action="/login/PropertySystem" method="POST" enctype="multipart/form-data"> 
             {{ csrf_field() }}
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -352,7 +340,7 @@ $(document).ready(function() {
             <input type="text" name="DisplayableAddress" class="form-control" id="inputAddress" required>
         </div>
         <div class="form-group">
-            <label for="UploadImage">Image</label>
+            <label for="UploadImage">Upload Image (jpeg,png,jpg)</label>
             <input type="file" name="Image" class="form-control-file" id="UploadImage">
         </div>
         <div class="form-row">
@@ -428,11 +416,11 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form id="edit_update" >
+            <form id="updatedata" method="POST" action= "MYSQLAPIController@update" enctype="multipart/form-data">
             {{ csrf_field() }}
             {{method_field('PUT')}}
 
-                <input type="hidden" name="id" id="id">
+                <input type="hidden" name="update_id" id="update_id">
         <div class="form-row">
             <div class="form-group col-md-6">
             <label for="inputCounty">County</label>
@@ -461,7 +449,7 @@ $(document).ready(function() {
             <label for="inputAddress">Displayable Address</label>
             <input type="text" name="DisplayableAddress" class="form-control" id="DisplayableAddress">
         </div>
-        <div class="form-group">
+        <div class="input-group">
             <label for="UploadImage">Image</label>
             <input type="file" name="Image" class="form-control-file" id="Image">
         </div>
@@ -517,7 +505,7 @@ $(document).ready(function() {
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            <button type="subimit" name="updatedata" class="btn btn-success">Update</button>
+            <button type="submit" name="updatedata" class="btn btn-success">Update</button>
         </div>
         </form>
       </div>
@@ -535,15 +523,15 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form id="deletedata">
+            <form id="deletedata" action= "/login/PropertySystem/{id}">
             {{ csrf_field() }}
-            {{method_field('delete')}}
-                <input type="hidden" name="id" id="delete_id">
+            {{method_field('DELETE')}}
+                <input type="hidden" name="delete_id" id="delete_id">
                 <h4> Do you wish to DELETE this Property?</h4>
  
             <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            <button type="subimit" name="deletedata" class="btn btn-success">Proceed</button>
+            <button type="submit" name="deletedata" class="btn btn-success">Proceed</button>
             </div>
         </form>
       </div>
@@ -561,7 +549,7 @@ $(document).ready(function() {
         </button>
       </div>
       <div class="modal-body">
-            <form action="apidatapost.php" method="POST">
+            <form action="" method="POST">
 
                 <h4> Add/Update Property Data From API </h4>
  
