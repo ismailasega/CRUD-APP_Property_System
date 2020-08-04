@@ -13,7 +13,7 @@ class MYSQLAPIController extends Controller
         $PropertyData = data::all();
         return view('asegadb', compact('PropertyData'));
     }
-
+    
     function store(Request $request){
         
         $PropertyData = new data();
@@ -28,7 +28,7 @@ class MYSQLAPIController extends Controller
         if($request->hasFile('Image')){
             $img = $request->file('Image');  
             $imgname =time().'.'.$img->getClientOriginalExtension();
-            $path= storage_psth('app/public/uploads/'. $imgname);
+            $path= storage_psth('public/uploads/'. $imgname);
             Image::make($img)->resize(200, 200)->save($path);
             $PropertyData->Image = $imgname;
         }
@@ -55,9 +55,9 @@ class MYSQLAPIController extends Controller
         if($request->hasFile('Image')){
             $img = $request->file('Image');  
             $imgname =time().'.'.$img->getClientOriginalExtension();
-            $path= storage_psth('app/public/uploads/'. $imgname);
+            $path= storage_psth('public/uploads/'. $imgname);
             Image::make($img)->resize(200, 200)->save($path);
-            Storage::delete('uploads/' . $$PropertyData->Image);
+            Storage::delete('public/uploads/' . $$PropertyData->Image);
             $PropertyData->Image = $imgname;
         }
         $PropertyData->NumberOfBedrooms = $request->input('NumberOfBedrooms');

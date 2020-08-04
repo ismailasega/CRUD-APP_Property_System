@@ -216,6 +216,32 @@ $(document).ready(function() {
 } );
 </script>
 <script>
+$(document).ready(function() {
+    $('#fetchdata').on('submit', function(e) {
+        e.preventDefault();
+        var api_key = "api_key=3NLTTNlXsi6rBWl7nYGluOdkl2htFHu";
+        $.ajax({
+            type: 'GET',
+            url: 'http://trialapi.craig.mtcdevserver.com/api/properties/'+api_key,
+            data: "",
+            dataType: "json",
+            success: function (data){
+                console.log(data);
+                $('#fetchdata').modal('hide')
+                alert("Property Data Fetched Succesfully");
+                window.location='/login/PropertySystem'
+            },
+            error:function(error){
+                console.log(error);
+                alert("Property Fetch Failed");
+            }
+
+        });
+        
+    } );
+} );
+</script>
+<script>
 $(document).ready(function (){
     $('.delbtn').on('click', function(){
         $('#deleteproperty').modal('show');
@@ -550,7 +576,8 @@ $(document).ready(function() {
       </div>
       <div class="modal-body">
             <form action="" method="POST">
-
+            {{ csrf_field() }}
+            {{method_field('GET')}}
                 <h4> Add/Update Property Data From API </h4>
  
         <div class="modal-footer">
